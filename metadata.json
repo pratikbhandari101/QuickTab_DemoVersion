@@ -1,0 +1,6 @@
+{
+  "name": "Cafe POS & Credit Ledger",
+  "description": "A fully functional POS billing, floor plan, and customer credit ledger system for cafes and restaurants.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

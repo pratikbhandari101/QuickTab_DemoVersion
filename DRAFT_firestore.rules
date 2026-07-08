@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny-all catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper to validate table document IDs
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Helper to validate table payload schema
+    function isValidTable(data) {
+      return data.keys().hasAll(['id', 'name', 'status', 'currentCart']) &&
+             data.id is string &&
+             data.name is string &&
+             data.name.size() <= 100 &&
+             data.status in ['Free', 'Occupied', 'Billing', 'Dues'] &&
+             data.currentCart is list &&
+             (!('x' in data) || data.x is number) &&
+             (!('y' in data) || data.y is number) &&
+             (!('width' in data) || data.width is number) &&
+             (!('height' in data) || data.height is number) &&
+             (!('shape' in data) || data.shape in ['circle', 'square', 'rectangle', 'oval']) &&
+             (!('seats' in data) || data.seats is number) &&
+             (!('rotation' in data) || data.rotation is number);
+    }
+
+    // Rules for tables collection
+    match /tables/{tableId} {
+      allow read: if true; // Let clients read live seating
+      allow create, update: if isValidId(tableId) && isValidTable(request.resource.data);
+      allow delete: if isValidId(tableId);
+    }
+
+    // Helper to validate structure payload schema
+    function isValidStructure(data) {
+      return data.keys().hasAll(['id', 'type', 'label', 'x', 'y', 'width', 'height']) &&
+             data.id is string &&
+             data.type in ['wall', 'counter', 'door', 'window', 'plant', 'label'] &&
+             data.label is string &&
+             data.x is number &&
+             data.y is number &&
+             data.width is number &&
+             data.height is number &&
+             (!('color' in data) || data.color is string) &&
+             (!('rotation' in data) || data.rotation is number);
+    }
+
+    // Rules for structures collection
+    match /structures/{structureId} {
+      allow read: if true; // Let clients read live layouts
+      allow create, update: if isValidId(structureId) && isValidStructure(request.resource.data);
+      allow delete: if isValidId(structureId);
+    }
+  }
+}

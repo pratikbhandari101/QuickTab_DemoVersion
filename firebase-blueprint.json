@@ -1,0 +1,104 @@
+{
+  "entities": {
+    "Table": {
+      "title": "Table",
+      "description": "Represents a physical table or seating spot in the cafe floor plan",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier of the table"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the table"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Free", "Occupied", "Billing", "Dues"],
+          "description": "The current billing/occupancy status of the table"
+        },
+        "currentCart": {
+          "type": "array",
+          "description": "Items ordered at this table that are yet to be checked out"
+        },
+        "x": {
+          "type": "number",
+          "description": "The X coordinate as a percentage (0-100) of the floor plan container"
+        },
+        "y": {
+          "type": "number",
+          "description": "The Y coordinate as a percentage (0-100) of the floor plan container"
+        },
+        "width": {
+          "type": "number",
+          "description": "The width of the table in pixels"
+        },
+        "height": {
+          "type": "number",
+          "description": "The height of the table in pixels"
+        },
+        "shape": {
+          "type": "string",
+          "enum": ["circle", "square", "rectangle", "oval"],
+          "description": "The geometric shape representing the table"
+        },
+        "seats": {
+          "type": "number",
+          "description": "The seating capacity of the table"
+        },
+        "rotation": {
+          "type": "number",
+          "description": "The rotation angle in degrees"
+        }
+      },
+      "required": ["id", "name", "status"]
+    },
+    "FloorStructure": {
+      "title": "FloorStructure",
+      "description": "Represents a physical background structural unit like a wall, counter, door, window, plant, or text label",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["wall", "counter", "door", "window", "plant", "label"]
+        },
+        "label": {
+          "type": "string"
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        },
+        "color": {
+          "type": "string"
+        },
+        "rotation": {
+          "type": "number"
+        }
+      },
+      "required": ["id", "type", "label", "x", "y", "width", "height"]
+    }
+  },
+  "firestore": {
+    "/tables/{tableId}": {
+      "schema": "Table",
+      "description": "Collection of all physical seating tables on the interactive floor plan"
+    },
+    "/structures/{structureId}": {
+      "schema": "FloorStructure",
+      "description": "Collection of all physical architectural structures on the background layout"
+    }
+  }
+}
